@@ -1,12 +1,11 @@
 from qt.core import QtCore, QtGui, QtWidgets
 
 from .browse_tab import BrowseTabMixin
-from .collection_tab import CollectionTabMixin
 from .metadata_tab import MetadataTabMixin
 
 
 # Top-level dialog that composes all three tab mixins
-class Ui_Dialog(MetadataTabMixin, BrowseTabMixin, CollectionTabMixin):
+class Ui_Dialog(MetadataTabMixin, BrowseTabMixin):
     def setupUi(self, Dialog):
         # Dialog
         Dialog.setObjectName("Dialog")
@@ -68,7 +67,6 @@ class Ui_Dialog(MetadataTabMixin, BrowseTabMixin, CollectionTabMixin):
         # Delegate tab-page setup to the mixins
         self.setup_metadata_tab()
         self.setup_browse_tab()
-        self.setup_collection_tab()
 
         self.verticalLayout_3.addWidget(self.tabWidget)
 
@@ -106,4 +104,3 @@ class Ui_Dialog(MetadataTabMixin, BrowseTabMixin, CollectionTabMixin):
 
         self.retranslate_metadata_tab(_translate)
         self.retranslate_browse_tab(_translate)
-        self.retranslate_collection_tab(_translate)
