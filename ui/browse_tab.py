@@ -135,6 +135,7 @@ class BrowseTabMixin:
 
         self.browse_action = action
         self.browse_cached_metadata = None
+        self.browse_cached_identifiers_data = None
         self.browse_cached_identifiers = []
         self.browse_cached_cover = None
 
@@ -166,6 +167,7 @@ class BrowseTabMixin:
         self.browse_cached_metadata = data
 
     def on_browse_identifiers_fetched(self, data):
+        self.browse_cached_identifiers_data = data
         self.browse_cached_identifiers = data.get("identifiers", [])
 
     def on_browse_cover_fetched(self, cover_bytes):
@@ -233,38 +235,8 @@ class BrowseTabMixin:
         data = self.browse_cached_metadata
         default_alias = data.get("defaultAlias") or {}
 
-        authors = []
-        author_credits = data.get("authorCredits") or {}
-        for credit in author_credits.get("names", []):
-            name = credit.get("name", "")
-            if name:
-                authors.append(name)
-
-        identifiers = {}
-        for id_item in self.browse_cached_identifiers:
-            id_type = id_item.get("type", "")
-            id_value = id_item.get("value", "")
-            if id_type and id_value:
-                identifiers[id_type.lower()] = id_value
-
-        bbid = data.get("bbid", "")
-        if bbid:
-            identifiers["bbid"] = bbid
-
-        publishers = data.get("publishers") or []
-        publisher_name = publishers[0].get("name", "") if publishers else ""
-
-        export_data = {
-            "title": default_alias.get("name", "Unknown"),
-            "sort_name": default_alias.get("sortName", ""),
-            "authors": authors,
-            "languages": data.get("languages", []),
-            "publisher": publisher_name,
-            "release_date": data.get("releaseEventDate", ""),
-            "identifiers": identifiers,
-            "disambiguation": data.get("disambiguation", ""),
-            "status": data.get("status", ""),
-        }
+        export_data = dict(data)
+        export_data["identifiers_data"] = self.browse_cached_identifiers_data or {}
 
         save_name = re.sub(r'[\\/:*?"<>|]', '_', default_alias.get("name", "Unknown"))
         save_path = choose_save_file(
