@@ -1,8 +1,10 @@
 import json
+import re
 
 from calibre.gui2 import choose_save_file
 from qt.core import QMessageBox, QtWidgets
 
+from ..languages import format_languages
 from ..workers import BookSearchByNameWorker, GetEditionDetailsByBBID
 from .browse.action_buttons import retranslate_action_buttons, setup_action_buttons
 from .browse.results_panel import retranslate_results_panel, setup_results_panel
@@ -81,7 +83,7 @@ class BrowseTabMixin:
             if not bbid:
                 continue
             bookTitle = item.get("defaultAlias", {}).get("name", "Unknown")
-            bookLang = item.get("defaultAlias", {}).get("language", "eng")
+            bookLang = format_languages([item.get("defaultAlias", {}).get("language", "Unknown")])
             bookSortTitle = item.get("defaultAlias", {}).get("sortName", bookTitle)
 
             row_position = self.tableWidget_browseTab.rowCount()
@@ -264,8 +266,10 @@ class BrowseTabMixin:
             "status": data.get("status", ""),
         }
 
+        save_name = re.sub(r'[\\/:*?"<>|]', '_', default_alias.get("name", "Unknown"))
         save_path = choose_save_file(
-            self.gui, "save-json", "books.json",
+            self.gui, "save-json", "Save metadata as JSON",
+            initial_filename=f"{save_name}.json",
             filters=[("JSON Files", ["json"])],
         )
 
