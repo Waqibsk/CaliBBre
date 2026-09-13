@@ -58,6 +58,7 @@ def setup_results_panel(self):
         self.tableWidget_browseTab.setHorizontalHeaderItem(col, item)
     self.tableWidget_browseTab.horizontalHeader().setCascadingSectionResizes(False)
     self.tableWidget_browseTab.horizontalHeader().setDefaultSectionSize(160)
+    self.tableWidget_browseTab.horizontalHeader().setHighlightSections(False)
     self.tableWidget_browseTab.horizontalHeader().setSortIndicatorShown(False)
     self.tableWidget_browseTab.horizontalHeader().setStretchLastSection(True)
     header_font = self.tableWidget_browseTab.horizontalHeader().font()
